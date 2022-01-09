@@ -6,7 +6,7 @@
  *  - 数据库密码
  *  - 数据库用户名
  */
-$conn = new mysqli("localhost","数据库名","数据库密码","数据库用户名");
+$conn = new mysqli("localhost","msg","msg","msg");
 
 
 
@@ -43,6 +43,7 @@ $retval = $conn->query($sql);
 if(!$retval ) {
     die('无法读取数据: ' . mysqli_error($conn));
 }
+/* 第一座“屎山”，不想删 */
 /*while($row = mysqli_fetch_array($retval, MYSQLI_ASSOC)) {
     echo "<li><span id='MsgName'>{$row['name']}</span>".
         "<span id='MsgContent'>{$row['content']}</span>".

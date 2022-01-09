@@ -33,7 +33,7 @@ body {
 .send {
 	display: flex;
 }
-.send input {
+.send input,.send textarea {
 	border-style: none;
 	border: 1px solid #ccc;
 	border-radius: 0;
@@ -45,10 +45,12 @@ body {
 	transition: 0.25s ease;
 	cursor: text;
 }
-.send input::placeholder {
+.send input::placeholder,
+.send textarea::placeholder {
     color: #b3b3b3;
 }
-.send input:hover {
+.send input:hover,
+.send textarea:hover {
 	background-color: #f5f5f5;
 }
 .send input:first-child {
@@ -63,7 +65,11 @@ input#Name {
 	width: 100px;
 }
 input#Message {
+	--height: 34px;
 	flex: 1;
+	height: var(--height);
+	min-height: var(--height);
+	resize: vertical;
 }
 
 
@@ -94,10 +100,8 @@ input#Message {
 .msg-box span#MsgContent {
 	flex: 1;
 	margin: 0 5px;
-	display: flex;
-	align-items: center;
 }
-.msg-box time#SendTime {
+.msg-box span#SendTime {
 	color: 	#e2e2e2;
     white-space: nowrap;
 }
@@ -139,55 +143,10 @@ a {
 	cursor: pointer;
 	border-bottom: 1px solid #448fd4;
 }
-
-
-
-/**
- * 一个弹窗
- */
-.OvO {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0,0,0,0.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.OvO > div {
-    max-width: 80vw;
-    max-height: 70vh;
-    background: #fff;
-    display: flex;
-    box-shadow: 0 0 6px 2px #adadad;
-}
-.OvO .left {
-    padding: 10px;
-    line-height: 1.5;
-    letter-spacing: 0.6px;
-}
-.OvO .right {
-    color: #fff;
-    background: #4c4c4c;
-}
-.OvO .right .close {
-    font-size: 26px;
-    font-weight: bold;
-    display: block;
-    padding: 4px 14px;
-}
-.OvO .right .close:hover {
-    color: #e6b319;
-}
 hr {
     border-style: none;
     border: 1px solid #f3f3f3;
     margin: 20px;
-}
-.OvO ul {
-   padding-left: 30px; 
 }
 
 

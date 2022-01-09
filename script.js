@@ -1,16 +1,10 @@
-let input_Name = $('#Send #Name'),
-    input_Message = $('#Send #Message');
-
-
-
-/* 功能：点击查看图片 */
-/*$('img').click(function() {
-	window.open($(this).attr('data-src'));
-});*/
+let input_Name      = $('#Send #Name'),
+    input_Message   = $('#Send #Message'),
+    post_File       = 'post.php';
 
 
 /**
- * 1.创建cookie
+ * cookie操作：创建cookie
  */
 function setCookie(cname,cvalue,exdays) {
     var d = new Date();
@@ -20,7 +14,7 @@ function setCookie(cname,cvalue,exdays) {
     document.cookie = cname + "=" + cvalue + "; " + expires;
 }
 /**
- * 2.获取cookie
+ * cookie操作：获取cookie
  */
 function getCookie(cname) {
     var name = cname + "=";
@@ -33,76 +27,97 @@ function getCookie(cname) {
     return "";
 }
 /**
- *  3.使用cookie
+ * cookie操作：使用cookie
+ *   msgName 获取cookie名为msgName的内容
+ *   如果cookie名为msgName的内容不为空则直接修改名称输入文本框的内容
  */
-var msgName=getCookie("msgName");
+var msgName = getCookie("msgName");
 if (msgName != "") {
     input_Name.val(msgName);
 }
 
+
+
+
 /**
- * 从服务端获取json并渲染到前端
+ * 消息获取函数
+ *  获取post.php给到的JSON的同时进行处理后渲染到#Receive的div标签
  */
-let getMsg = {
-    type: "GET",
-    async: true,
-    url: 'post.php',
-    dataType: 'JSON',
-    data: {},
-    success: function (data) {
-        let dataEnd = data.reverse();　// 先将数据进行倒序处理
-        let str = '';
-        for(let i = 0;i < data.length;i++) {
-            str += '<li>';
-            str += '<span id="MsgName">' + dataEnd[i].name + '</span>';
-            str += '<span id="MsgContent">' + dataEnd[i].content + '</span>';
-            str += '<time id="SendTime" datetime="' + dataEnd[i].Time + '" title="' + dataEnd[i].Time + '">' + dataEnd[i].Time.split(' ').pop() + '</time>';
-            str += '</li>';
-        };
-        $('#Receive').html(str);
-        setTimeout(1000);
-        $.ajax(getMsg);
-    }
+var getMsg = function(data) {
+    let dataEnd = data.reverse();　// JSON数据倒序排序
+    let str = '';                  // 字符串拼接
+    $.each(dataEnd,function(i,name,content,Time){
+        str += '<li>';
+        str += '<span id="MsgName">' + dataEnd[i].name + '</span>';
+        str += '<span id="MsgContent">' + marked(dataEnd[i].content.replace(/\/n\//g,'</br>')) + '</span>';
+        str += '<span id="SendTime" title="' + dataEnd[i].Time + '">' + dataEnd[i].Time.split(' ').pop() + '</span>';
+        str += '</li>';
+    });
+    $('#Receive').html(str);
 };
-function a() {
-    $.ajax(getMsg);
+
+function timeOut() {
+    setTimeout(20000);
+    // 使用JQuery提供的$.getJSON方法获取JSON数据
+    $.getJSON(post_File,getMsg);
 }
-a();
+timeOut();
+
 
 
 /**
- *回车键提交表单
+ * 键盘监听事件
+ *  Enter 提交表单
+ *  Ctrl + Enter 换行
  */
 $('#Send').keydown(function(e) {
-	let curkey = e.which;
+	let keyCode = e.which;
 
-	if(curkey == 13) {
+    if(keyCode == 13) {
 	    if(input_Name.val() !== '' && input_Message.val() !='') {
     	    /* 使用Ajax实现无刷新提交表单数据 */
             $.ajax({
                 type: "POST",
-                url: 'post.php',
+                url: post_File,
                 data: $('#Send').serialize(),
                 success: function () {
                     // 提交成功后清除文本框的内容
                     $('#Message').val('');
-                    a();
+                    $.getJSON(post_File,getMsg);
                 },
-                error : function() {
+                error: function() {
                     console.error('无法提交内容，请检查是否连接数据库')
                 }
             });
+
+            // cookie操作：如果msgName不为空或名称输入文本框的内容不等于msgNmae，则
             if(msgName != "" || input_Name.val() !== msgName) {
+                // 变量msgName赋值为名称输入文本框的内容
                 msgName = input_Name.val();
-                if (msgName!="" && msgName!=null) {
+                // 这里的 msgName != "" 指上面获取到的内容不是空内容，并且msgName不等于null
+                if (msgName != "" && msgName!=null) {
+                    // 创建cookie且名为msgName，cookie的内容为上面获取名称输入文本框的内容，365为cookie过期时间
                     setCookie("msgName",msgName,365);
                 }
             }
 	    } else {
-	        input_Message.attr('placeholder','!名称或内容不能为空');
+            input_Name.attr('placeholder','你是谁？')
+	        input_Message.attr('placeholder','你想说啥？');
 	    };
+
         $('#Send').submit(function(event){
-            event.preventDefault(); // 取消本身默认行为
+            event.preventDefault(); // 取消表单本身默认行为
         });
-	}
+	};
 });
+
+
+
+
+/**
+ * TODO:
+ *  [功能] 点击查看图片
+ */
+/*$('img').click(function() {
+	window.open($(this).attr('data-src'));
+});*/
