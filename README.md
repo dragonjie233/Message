@@ -1,25 +1,35 @@
 <h1 align="center">留言条</h1>
 
-**Version:** Beta 0.2 | **[Demo](http://demo.longjie233.top)**
+<p align="center">
+  <img src="https://img.shields.io/badge/Version-Beta%201.0-blue" />
+  <a href="http://demo.longjie233.top"><img src="https://img.shields.io/badge/Click it to see-Demo-brightgreen"></a>
+</p>
 
->  闲得无聊，写了个非常简单的多人读写数据库的操作，美名其曰留言。
+> 闲得无聊，写了个非常简单的多人读写数据库的操作，美名其曰留言。
 
-## 食用方法
 
-  0. **环境要求：**
-     - PHP =＞ 5.6
-     - MySQL
-  1. 克隆仓库到自己的服务器
-  2. 手动创建数据库，记下数据库名、用户名和密码，然后把`Message.sql.gz`文件导入到刚才创建的数据库中
-  3. 修改`post.php`第9行的连接数据库配置信息
+**环境要求：**
 
->***备注：***
->
-> - *留言消息需在数据库中手动删除*
-> - *留言时间记录的是服务器的时间，而不是记录本地时间*
-> - ***注意！*** *该源码的安全性可以说根本没有，小心被狡猾的人利用*
+  - PHP ≧ 5.6
+  - SQLite3
 
-## 开发计划
-- [ ] 支持多行文本
-- [ ] 自动转换图床图片链接
-- [ ] 继续优化代码和安全性
+**搭建方法：**
+
+ 1. 克隆仓库到自己的服务器
+ 2. 修改 php.ini 文件以开启支持 SQLite3 数据库
+    - *（安装编译时已经加上了 SQLite3 就不需要修改配置文件了）*
+    - 在 php.ini 中去注释或增加以下内容，然后重启 php-fpm 即可
+
+```
+extension_dir = 你的拓展.so文件的路径
+
+extension=pdo.so
+extension=sqlite.so
+extension=pdo_sqlite.so
+```
+
+**备注：**
+
+ - 留言消息需在数据库中手动删除
+ - 留言时间记录的是服务器的时间，并非记录本地时间
+ - 如果没有报错但数据无法插入到数据库时，给数据库文件和文件夹 777 权限
